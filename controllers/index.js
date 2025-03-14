@@ -4,16 +4,28 @@ module.exports = (chatNamespace) => {
     chatNamespace.on("connection", (socket) => {
         console.log("User:", socket.id);
         getAntrean("ANA").then((data) => {
-                chatNamespace.emit("ANA", data);
-            }
+            chatNamespace.emit("ANA", data);
+        }
         );
         getAntrean("U0005").then((data) => {
             chatNamespace.emit("U0005", data);
-            }
+        }
         );
         getAntrean("U0006").then((data) => {
             chatNamespace.emit("U0006", data);
-            }
+        }
+        );
+        getAntrean("INT").then((data) => {
+            chatNamespace.emit("INT", data);
+        }
+        );
+        getAntrean("U0028").then((data) => {
+            chatNamespace.emit("U0028", data);
+        }
+        );
+        getAntrean("U0044").then((data) => {
+            chatNamespace.emit("U0044", data);
+        }
         );
     });
     setInterval(() => {
@@ -41,7 +53,7 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("U0044", data);
         }
         );
-    }, 5000);
+    }, 10000);
 };
 async function getAntrean(kd_poli) {
     let dateNow = new Date();
