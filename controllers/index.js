@@ -61,7 +61,7 @@ async function getAntrean(kd_poli) {
     let month = dateNow.getMonth() + 1;
     let year = dateNow.getFullYear();
     let tgl = `${year}-${month}-${date}`;
-    console.log(tgl);
+    // console.log(tgl);
 
     let config = {
         method: 'get',
