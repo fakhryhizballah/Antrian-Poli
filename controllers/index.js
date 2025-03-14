@@ -19,7 +19,7 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("INT", data);
         }
         );
-        getAntrean("U0010").then((data) => {
+        getAntrean("U0002").then((data) => {
             chatNamespace.emit("U0010", data);
         }
         );
@@ -45,8 +45,8 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("INT", data);
         }
         );
-        getAntrean("U0010").then((data) => {
-            chatNamespace.emit("U0010", data);
+        getAntrean("U0002").then((data) => {
+            chatNamespace.emit("U0002", data);
         }
         );
         getAntrean("U0044").then((data) => {
