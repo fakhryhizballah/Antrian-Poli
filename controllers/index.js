@@ -19,8 +19,8 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("INT", data);
         }
         );
-        getAntrean("U0028").then((data) => {
-            chatNamespace.emit("U0028", data);
+        getAntrean("U0010").then((data) => {
+            chatNamespace.emit("U0010", data);
         }
         );
         getAntrean("U0044").then((data) => {
@@ -45,8 +45,8 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("INT", data);
         }
         );
-        getAntrean("U0028").then((data) => {
-            chatNamespace.emit("U0028", data);
+        getAntrean("U0010").then((data) => {
+            chatNamespace.emit("U0010", data);
         }
         );
         getAntrean("U0044").then((data) => {
@@ -74,8 +74,7 @@ async function getAntrean(kd_poli) {
     };
 
     try {
-    const response = await axios.request(config)
-
+        const response = await axios.request(config)
     let antrians = [];
     let sudah = 0;
     let belum = 0;
