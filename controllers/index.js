@@ -34,10 +34,10 @@ async function getAntrean(kd_poli) {
     let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `https://api.rsudaa.singkawangkota.go.id/api/ralan/antiran/poli?tgl_antrean=${tgl}&kd_poli=${kd_poli}`,
+        url: `${process.env.HOST}/api/ralan/antiran/poli?tgl_antrean=${tgl}&kd_poli=${kd_poli}`,
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdkYzJmMDUwLTI2NzYtNGUyNC1iNDQyLWM2MDg2MWFhYmY2NyIsImlhdCI6MTczMjk1MDQyMH0.Eu-RpGsilnbxR1YS-C1U1KbyQWdOArmt8FpZXfbSPAo"
+            'Authorization': process.env.TOKEN
         }
     };
 
