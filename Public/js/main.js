@@ -93,3 +93,12 @@ socket.on(bath3, (data) => {
         antrianContainer.appendChild(newElement);
     }
 });
+socket.on('tanggal', (data) => {
+    console.log(data);
+    document.getElementById('tanggal').innerHTML = data;
+    document.getElementById('tanggal2').innerHTML = data;
+    document.getElementById('tanggal3').innerHTML = data;
+});
+// // document.getElementById('bath1_poliklinik').innerHTML = data.nm_poli;
+// document.getElementById('tanggal').innerHTML = data.tanggal;
+

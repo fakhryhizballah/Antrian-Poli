@@ -7,8 +7,8 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("ANA", data);
         }
         );
-        getAntrean("U0005").then((data) => {
-            chatNamespace.emit("U0005", data);
+        getAntrean("U0011").then((data) => {
+            chatNamespace.emit("U0011", data);
         }
         );
         getAntrean("U0006").then((data) => {
@@ -33,8 +33,8 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("ANA", data);
         }
         );
-        getAntrean("U0005").then((data) => {
-            chatNamespace.emit("U0005", data);
+        getAntrean("U0011").then((data) => {
+            chatNamespace.emit("U0011", data);
         }
         );
         getAntrean("U0006").then((data) => {
@@ -53,6 +53,9 @@ module.exports = (chatNamespace) => {
             chatNamespace.emit("U0044", data);
         }
         );
+        let dateNow = new Date();
+        console.log(`${dateNow.toLocaleString('id', { weekday: 'long' })}, ${dateNow.getDate()} ${dateNow.toLocaleString('en', { month: 'long' })} ${dateNow.getFullYear()}`);
+        chatNamespace.emit("tanggal", `${dateNow.toLocaleString('id', { weekday: 'long' })}, ${dateNow.getDate()} ${dateNow.toLocaleString('en', { month: 'long' })} ${dateNow.getFullYear()}`);
     }, 10000);
 };
 async function getAntrean(kd_poli) {
