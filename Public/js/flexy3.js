@@ -59,7 +59,7 @@ async function main() {
     }
    
 }
-main();
+// main();
 
 function listing(x,data) {
         let antrians = [];
@@ -148,11 +148,11 @@ function listing(x,data) {
     }
 }
 
-// setTimeout(() => {
-//     console.log('10 detik telah berlalu');
-//     main();
-// }, 10000);
-// document.addEventListener("DOMContentLoaded", function(event) {
-//     console.log("Document is ready");
-//     main();
-// });
+setTimeout(() => {
+    console.log('10 detik telah berlalu');
+    main();
+}, 10000);
+document.addEventListener("DOMContentLoaded", function (event) {
+    console.log("Document is ready");
+    main();
+});
