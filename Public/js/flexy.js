@@ -26,7 +26,6 @@ async function getAntrean(kd_poli, tgl) {
 let urlParams = new URLSearchParams(window.location.search);
 let kdpoli = urlParams.get('kdpoli');
 let poli = kdpoli.split(',');
-console.log(poli);
 // console.log(bath1, bath2, bath3);
 // let poli = [bath1, bath2, bath3];
 // let allParams = [];
@@ -48,7 +47,6 @@ async function main() {
     document.getElementById('tanggal2').innerHTML = tanggal;
     x = 1;
     for (let i of poli) {
-        console.log(x);
         let data = await getAntrean(i, tgl);
         if (data == null) {
             continue;
@@ -58,7 +56,6 @@ async function main() {
     }
    
 }
-main();
 
 function listing(x,data) {
         let antrians = [];
@@ -91,7 +88,8 @@ function listing(x,data) {
         } else {
             return 0;
         }
-    });
+    }); 
+    console.log(data.data[0].poliklinik.nm_poli + " " + x);
     document.getElementById(`bath${x}_poliklinik`).innerHTML = data.data[0].poliklinik.nm_poli;
     document.getElementById(`bath${x}_sudah`).innerHTML = sudah;
     document.getElementById(`bath${x}_belum`).innerHTML = belum;
@@ -105,16 +103,15 @@ function listing(x,data) {
     }
     document.getElementById(`bath${x}_antrian`).innerHTML = "";
     for (let i of antrians) {
-        console.log(i);
         const newElement = document.createElement("div");
         newElement.className = "bg-gray-50 p-4 rounded-lg inset-ring flex";
-        console.log(i.status);
         if (i.status == "Sudah") {
             newElement.innerHTML = `
             <div class="bg-green-200 p-4 rounded-lg text-xl font-bold w-16 text-center">${i.no_reg}</div>
             <div class="ml-4">
                 <p>No Rawat: ${i.no_rawat}</p>
                 <p>Nama: ${i.nm_pasien}</p>
+                <p>Poli: ${data.data[0].poliklinik.nm_poli}</p>
                 <p>Dokter: ${i.nm_dokter}</p>
                 <p>Status: ${i.status}</p>
             </div>
@@ -126,6 +123,7 @@ function listing(x,data) {
             <div class="ml-4">
                 <p>No Rawat: ${i.no_rawat}</p>
                 <p>Nama: ${i.nm_pasien}</p>
+                <p>Poli: ${data.data[0].poliklinik.nm_poli}</p>
                 <p>Dokter: ${i.nm_dokter}</p>
                 <p>Status: ${i.status}</p>
             </div>
@@ -137,6 +135,7 @@ function listing(x,data) {
             <div class="ml-4">
                 <p>No Rawat: ${i.no_rawat}</p>
                 <p>Nama: ${i.nm_pasien}</p>
+                <p>Poli: ${data.data[0].poliklinik.nm_poli}</p>
                 <p>Dokter: ${i.nm_dokter}</p>
                 <p>Status: ${i.status}</p>
             </div>
@@ -147,7 +146,7 @@ function listing(x,data) {
     }
 }
 
-setTimeout(() => {
+setInterval(() => {
     console.log('10 detik telah berlalu');
     main();
 }, 10000);
@@ -155,3 +154,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
     console.log("Document is ready");
     main();
 });
+// Kecepatan scroll (pixel per step)
+let speed = 1;
+
+// Arah awal scroll (down)
+let direction = 1;
+
+function autoScroll() {
+    window.scrollBy(0, speed * direction);
+
+    // Jika sudah sampai bawah → balik arah
+    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+        direction = -1; // scroll up
+    }
+
+    // Jika sudah sampai atas → balik arah
+    if (window.scrollY <= 0) {
+        direction = 1; // scroll down
+    }
+
+    requestAnimationFrame(autoScroll); // loop tanpa jeda
+}
+
+// Start
+autoScroll();
