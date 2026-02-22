@@ -33,7 +33,7 @@ function playAudiosSequentially(audioPaths) {
 async function generateTTS(pesan) {
     try {
         // 1. Await the fetch call with options
-        const response = await fetch('http://localhost:3000/generate-tts', {
+        const response = await fetch('http://10.99.0.55:3000/generate-tts', {
             method: 'POST', // Specify the method
             headers: {
                 'Content-Type': 'application/json' // Indicate the content type
