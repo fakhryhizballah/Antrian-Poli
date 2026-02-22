@@ -1,10 +1,9 @@
 async function getAntrean(kd_poli, tgl) {
     try {
-        const response = await fetch(`https://api.rsudaa.singkawangkota.go.id/api/ralan/antiran/poli?tgl_antrean=${tgl}&kd_poli=${kd_poli}`, {
+        const response = await fetch(`/api/antrian?tgl_antrean=${tgl}&kd_poli=${kd_poli}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdkYzJmMDUwLTI2NzYtNGUyNC1iNDQyLWM2MDg2MWFhYmY2NyIsImlhdCI6MTczMjk1MDQyMH0.Eu-RpGsilnbxR1YS-C1U1KbyQWdOArmt8FpZXfbSPAo'
+                'Content-Type': 'application/json'
             }
         });
 
@@ -26,13 +25,39 @@ async function getAntrean(kd_poli, tgl) {
 let urlParams = new URLSearchParams(window.location.search);
 let kdpoli = urlParams.get('kdpoli');
 let poli = kdpoli.split(',');
-// console.log(bath1, bath2, bath3);
-// let poli = [bath1, bath2, bath3];
-// let allParams = [];
-// for (let [key, value] of urlParams) {
-//     allParams.push({ key, value });
-// }
-// console.log(allParams);
+console.log(poli);
+
+// Mapping kd_poli ke index (1, 2, 3)
+let poliIndex = {};
+poli.forEach((kd, idx) => {
+    poliIndex[kd] = idx + 1;
+});
+
+// Socket.IO Client Setup
+const socket = io();
+
+socket.on('connect', () => {
+    console.log('Connected to server:', socket.id);
+});
+socket.on('panggil_update', async (data) => {
+    console.log('Panggil update received:', data.kd_poli);
+    if (poli.some(kd => kd.toLowerCase() === data.kd_poli.toLowerCase())) {
+        console.log('Panggil update received:', data);
+        // playAudiosSequentially(data);
+        // await generateTTS(data);
+        let namapx = await generateTTS(data.nm_pasien);
+        dataAudio.push(namapx.url);
+        let polis = await generateTTS("Di Panggil ke " + data.nm_poli);
+        dataAudio.push(polis.url);
+        playAudiosSequentially(dataAudio);
+    }
+});
+
+socket.on('disconnect', () => {
+    console.log('Disconnected from server');
+});
+
+
 
 async function main() {
     let dateNow = new Date();
@@ -154,27 +179,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
     console.log("Document is ready");
     main();
 });
-// Kecepatan scroll (pixel per step)
-let speed = 1;
+// // Kecepatan scroll (pixel per step)
+// let speed = 1;
 
-// Arah awal scroll (down)
-let direction = 1;
+// // Arah awal scroll (down)
+// let direction = 1;
 
-function autoScroll() {
-    window.scrollBy(0, speed * direction);
+// function autoScroll() {
+//     window.scrollBy(0, speed * direction);
 
-    // Jika sudah sampai bawah → balik arah
-    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
-        direction = -1; // scroll up
-    }
+//     // Jika sudah sampai bawah → balik arah
+//     if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+//         direction = -1; // scroll up
+//     }
 
-    // Jika sudah sampai atas → balik arah
-    if (window.scrollY <= 0) {
-        direction = 1; // scroll down
-    }
+//     // Jika sudah sampai atas → balik arah
+//     if (window.scrollY <= 0) {
+//         direction = 1; // scroll down
+//     }
 
-    requestAnimationFrame(autoScroll); // loop tanpa jeda
-}
+//     requestAnimationFrame(autoScroll); // loop tanpa jeda
+// }
 
-// Start
-autoScroll();
+// // Start
+// autoScroll();

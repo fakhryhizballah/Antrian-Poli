@@ -1,0 +1,52 @@
+<div class="container mx-auto p-6">
+    <h1 class="text-4xl font-bold text-center mb-8">PANGGIL PASIEN - POLI: <span id="poli_name" class="text-blue-600"><%=kd_poli%></span></h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Panel: Daftar Pasien -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">Daftar Penunggu</h2>
+                <div id="pasien_list" class="space-y-3 max-h-96 overflow-y-auto">
+                    <p class="text-gray-500 text-center py-8">Loading data pasien...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Display Panggilan Saat Ini -->
+        <div class="lg:col-span-1">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg shadow-lg p-8 text-white min-h-96 flex flex-col justify-between sticky top-6">
+                <div>
+                    <h2 class="text-2xl font-bold mb-6 text-center">PANGGILAN SAAT INI</h2>
+                    <div class="bg-white bg-opacity-10 rounded-lg p-6 text-center">
+                        <p class="text-sm opacity-80 mb-2">No. Urut</p>
+                        <p id="display_no_reg" class="text-6xl font-bold mb-4">--</p>
+                        <p class="text-sm opacity-80 mb-2">Nama Pasien</p>
+                        <p id="display_nm_pasien" class="text-xl font-semibold mb-4 break-words">-</p>
+                        <p class="text-sm opacity-80 mb-2">Dokter</p>
+                        <p id="display_nm_dokter" class="text-lg font-semibold">-</p>
+                    </div>
+                </div>
+                <div class="text-xs opacity-75 text-center">
+                    <p id="last_call_time">-</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pasien-card {
+        transition: all 0.3s ease;
+    }
+    .pasien-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    .pasien-card.called {
+        background-color: #dcfce7;
+        border-left: 4px solid #22c55e;
+    }
+</style>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/asset/js/panggil.js"></script>

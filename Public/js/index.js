@@ -12,11 +12,10 @@ async function getAntrean(kd_poli) {
     document.getElementById('tanggal3').innerHTML = tanggal;
 
     try {
-        const response = await fetch(`https://api.rsudaa.singkawangkota.go.id/api/ralan/antiran/poli?tgl_antrean=${tgl}&kd_poli=${kd_poli}`, {
+        const response = await fetch(`/api/antrian?tgl_antrean=${tgl}&kd_poli=${kd_poli}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdkYzJmMDUwLTI2NzYtNGUyNC1iNDQyLWM2MDg2MWFhYmY2NyIsImlhdCI6MTczMjk1MDQyMH0.Eu-RpGsilnbxR1YS-C1U1KbyQWdOArmt8FpZXfbSPAo'
+                'Content-Type': 'application/json'
             }
         });
 
