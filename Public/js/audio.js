@@ -1,21 +1,8 @@
 let dataAudio = [];
 let sedangProses = false;
 function playAudiosSequentially(audioPaths) {
-    // let index = 0;
-    // console.log("Playing audios sequentially:", audioPaths);
-
-    // function playNext() {
-    //     if (index < audioPaths.length) {
-    //         const audio = new Audio(audioPaths[index]);
-    //         audio.play();
-    //         audio.onended = () => {
-    //             index++;
-    //             playNext(); // Lanjutkan ke audio berikutnya setelah selesai
-    //         };
-    //     }
-    // }
-
-    // playNext(); // Mulai pemutaran
+    console.log(dataAudio);
+    console.log(sedangProses);
     if (sedangProses || dataAudio.length === 0) {
         return;
     }
@@ -28,6 +15,10 @@ function playAudiosSequentially(audioPaths) {
                 sedangProses = false;
                 playAudiosSequentially(); // Lanjutkan ke audio berikutnya setelah selesai
             };
+}
+function audiotest() {
+    const audio = new Audio('http://10.99.0.55:3000/api/voice/ON.wav');
+    audio.play();
 }
 
 async function generateTTS(pesan) {
