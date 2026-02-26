@@ -1,26 +1,52 @@
 let dataAudio = [];
 let sedangProses = false;
 function playAudiosSequentially(audioPaths) {
-    console.log(dataAudio);
-    console.log(sedangProses);
+    // 1. Cek apakah sedang ada yang diputar atau antrean kosong
     if (sedangProses || dataAudio.length === 0) {
+        console.log(sedangProses ? 'Sedang dalam proses pemutaran...' : 'Antrean audio kosong.');
         return;
     }
+
+    // 2. Tandai status sedang memproses
     sedangProses = true;
-    const data = dataAudio.shift();
+
+    // 3. Ambil data pertama dari antrean
+    const source = dataAudio.shift();
+
     try {
-    const audio = new Audio(data);
-        audio.play();
+        const audio = new Audio(source);
+
+        // Handler saat audio selesai diputar
         audio.onended = () => {
+            console.log('Audio selesai diputar.');
             sedangProses = false;
-            playAudiosSequentially(); // Lanjutkan ke audio berikutnya setelah selesai
+            playAudiosSequentially(); // Lanjut ke antrean berikutnya
         };
+
+        // Handler jika terjadi error saat memuat atau memutar audio
+        audio.onerror = (e) => {
+            console.error('Gagal memuat audio:', source, e);
+            sedangProses = false;
+            playAudiosSequentially(); // Lewati yang error, lanjut ke berikutnya
+        };
+
+        // Mulai pemutaran
+        const playPromise = audio.play();
+
+        // Browser modern mengembalikan promise pada audio.play()
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.error('Error saat mencoba memutar audio (Auto-play policy?):', error);
+                sedangProses = false;
+                playAudiosSequentially();
+            });
+        }
+
     } catch (error) {
+        console.error('Terjadi kesalahan fatal pada objek Audio:', error);
         sedangProses = false;
         playAudiosSequentially();
     }
-
-
 }
 function audiotest() {
     try {
