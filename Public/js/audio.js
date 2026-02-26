@@ -16,7 +16,7 @@ function playAudiosSequentially(audioPaths) {
             playAudiosSequentially(); // Lanjutkan ke audio berikutnya setelah selesai
         };
     } catch (error) {
-
+        sedangProses = false;
     }
 
 }
