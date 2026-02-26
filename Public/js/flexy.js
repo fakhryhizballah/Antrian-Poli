@@ -46,9 +46,9 @@ socket.on('panggil_update', async (data) => {
         // playAudiosSequentially(data);
         // await generateTTS(data);
         let namapx = await generateTTS(data.nm_pasien);
-        dataAudio.push(namapx.url);
+        dataAudio.push(namapx.path);
         let polis = await generateTTS("Di Panggil ke " + data.nm_poli);
-        dataAudio.push(polis.url);
+        dataAudio.push(polis.path);
         playAudiosSequentially(dataAudio);
     }
 });

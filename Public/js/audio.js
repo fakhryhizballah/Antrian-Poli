@@ -8,23 +8,32 @@ function playAudiosSequentially(audioPaths) {
     }
     sedangProses = true;
     const data = dataAudio.shift();
-
+    try {
     const audio = new Audio(data);
-            audio.play();
-            audio.onended = () => {
-                sedangProses = false;
-                playAudiosSequentially(); // Lanjutkan ke audio berikutnya setelah selesai
-            };
+        audio.play();
+        audio.onended = () => {
+            sedangProses = false;
+            playAudiosSequentially(); // Lanjutkan ke audio berikutnya setelah selesai
+        };
+    } catch (error) {
+
+    }
+
 }
 function audiotest() {
-    const audio = new Audio('http://10.99.0.55:3000/api/voice/ON.wav');
-    audio.play();
+    try {
+        const audio = new Audio('/api/voice/ON.wav');
+        audio.play();
+    } catch (error) {
+        console.log(error);
+    }
+
 }
 
 async function generateTTS(pesan) {
     try {
         // 1. Await the fetch call with options
-        const response = await fetch('http://10.99.0.55:3000/generate-tts', {
+        const response = await fetch('/generate-tts', {
             method: 'POST', // Specify the method
             headers: {
                 'Content-Type': 'application/json' // Indicate the content type
