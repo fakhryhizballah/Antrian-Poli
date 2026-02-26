@@ -18,6 +18,7 @@ function playAudiosSequentially(audioPaths) {
     } catch (error) {
         sedangProses = false;
     }
+    playAudiosSequentially();
 
 }
 function audiotest() {
