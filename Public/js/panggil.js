@@ -119,6 +119,7 @@ socket.on('connect', () => {
 
 // Listen untuk panggil update dari server
 socket.on('panggil_update', (data) => {
+    if (data.kd_poli !== kd_poli) return;
     console.log('Panggil update received:', data);
     
     // Update display panel
