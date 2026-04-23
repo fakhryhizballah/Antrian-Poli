@@ -176,9 +176,9 @@ function listing(x,data) {
 
 
 setInterval(() => {
-    console.log('10 detik telah berlalu');
+    console.log('60 detik telah berlalu');
     main();
-}, 10000);
+}, 60000);
 document.addEventListener("DOMContentLoaded", function (event) {
     console.log("Document is ready");
     main();
