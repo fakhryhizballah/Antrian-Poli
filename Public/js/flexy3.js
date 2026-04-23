@@ -76,6 +76,9 @@ async function main() {
     // Initial load dari API (fallback jika socket belum siap)
     let x = 1;
     for (let i of poli) {
+        if (x >3){
+            return
+        }
         let data = await getAntrean(i, tgl);
         if (data == null) {
             continue;
