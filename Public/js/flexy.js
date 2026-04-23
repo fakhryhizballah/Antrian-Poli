@@ -72,6 +72,9 @@ async function main() {
     document.getElementById('tanggal2').innerHTML = tanggal;
     x = 1;
     for (let i of poli) {
+         if (x >2){
+            return
+        }
         let data = await getAntrean(i, tgl);
         if (data == null) {
             continue;
