@@ -181,9 +181,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     main();
 });
 setInterval(() => {
-    console.log('10 detik telah berlalu');
+    console.log('60 detik telah berlalu');
     main();
-}, 10000);
+}, 60000);
 // Kecepatan scroll (pixel per step)
 // let speed = 1;
 
