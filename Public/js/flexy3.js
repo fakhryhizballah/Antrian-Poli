@@ -60,6 +60,8 @@ socket.on('disconnect', () => {
 
 
 
+
+
 async function main() {
     let dateNow = new Date();
     let date = dateNow.getDate();
@@ -180,10 +182,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
     console.log("Document is ready");
     main();
 });
-setInterval(() => {
-    console.log('60 detik telah berlalu');
-    main();
-}, 60000);
+// setInterval(() => {
+//     console.log('60 detik telah berlalu');
+//     main();
+// }, 60000);
 // Kecepatan scroll (pixel per step)
 // let speed = 1;
 

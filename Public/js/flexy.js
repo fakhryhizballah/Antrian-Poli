@@ -173,12 +173,39 @@ function listing(x,data) {
         antrianContainer.appendChild(newElement);
     }
 }
+const eventSource = new EventSource('/api/stream');
+
+// 2. Listener saat koneksi berhasil terbuka
+eventSource.onopen = () => {
+
+};
+// 3. Listener saat menerima payload dari backend
+eventSource.onmessage = async (event) => {
+    const data = JSON.parse(event.data);
+    console.log('[SSE] Webhook payload:', data);
+    if (poli.some(kd => kd.toLowerCase() === data.kd_poli.toLowerCase())) {
+        console.log('Panggil update received:', data);
+        main();
+        let namapx = await generateTTS(data.nm_pasien);
+        dataAudio.push(namapx.path);
+        let polis = await generateTTS("Di Panggil ke " + data.nm_poli);
+        dataAudio.push(polis.path);
+        playAudiosSequentially(dataAudio);
+    }
+};
+
+// 4. Listener jika terjadi error atau koneksi terputus
 
 
-setInterval(() => {
-    console.log('60 detik telah berlalu');
-    main();
-}, 60000);
+// Opsional: Tutup koneksi dengan rapi jika user menutup tab/window
+window.addEventListener('beforeunload', () => {
+    eventSource.close();
+});
+
+// setInterval(() => {
+//     console.log('60 detik telah berlalu');
+//     main();
+// }, 60000);
 document.addEventListener("DOMContentLoaded", function (event) {
     console.log("Document is ready");
     main();

@@ -38,8 +38,6 @@ app.use("/asset/js/", express.static(path.join(__dirname + '/Public/js/')));
 app.use("/asset/img/", express.static(path.join(__dirname + '/Public/img/')));
 app.use("/asset/css/", express.static(path.join(__dirname + '/Public/css/')));
 app.use("/asset/video/", express.static(path.join(__dirname + '/Public/video/')));
-
-
 const routes = require('./routes');
 app.use('/', routes);
 
@@ -125,6 +123,33 @@ async function broadcastAntrianData(kd_poli) {
 //         await broadcastAntrianData(poli);
 //     }
 // }, 10000);
+// Simpan koneksi client yang aktif
+
+
+app.get('/api/antiran/poli/:kd_poli/:nm_poli/:nm_pasien', (req, res) => {
+    const { kd_poli, nm_poli, nm_pasien } = req.params;
+    const data = { kd_poli, nm_poli, nm_pasien };
+    clients.forEach(client => client.write(`data: ${JSON.stringify(data)}\n\n`));
+    return res.status(200).json({ message: 'Data sent successfully' });
+})
+let clients = [];
+
+// 1. Endpoint untuk Client Web App melakukan subscribe (GET)
+app.get('/api/stream', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    // Daftarkan client
+    clients.push(res);
+
+    req.on('close', () => {
+        clients = clients.filter(client => client !== res);
+    });
+});
+
+// app.listen(3000, () => console.log('Server running on port 3000'));
 
 const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
