@@ -39,6 +39,18 @@ router.get('/api/antrian', async (req, res) => {
                 }
             }
         );
+        const response2 = await axios.get(
+            `${process.env.HOST}/api/ralan/antiran/rujukan?tgl_antrean=${tgl_antrean}&kd_poli=${kd_poli}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': process.env.TOKEN
+                }
+            }
+        );
+
+        response.data.data = response.data.data.concat(response2.data.data);
+
 
         res.json(response.data);
     } catch (error) {

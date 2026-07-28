@@ -1,63 +1,4 @@
 const axios = require('axios');
-const { tr } = require('date-fns/locale');
-module.exports = (chatNamespace) => {
-    // chatNamespace.on("connection", (socket) => {
-    //     console.log("User:", socket.id);
-    //     getAntrean("ANA").then((data) => {
-    //         chatNamespace.emit("ANA", data);
-    //     }
-    //     );
-    //     getAntrean("U0011").then((data) => {
-    //         chatNamespace.emit("U0011", data);
-    //     }
-    //     );
-    //     getAntrean("U0006").then((data) => {
-    //         chatNamespace.emit("U0006", data);
-    //     }
-    //     );
-    //     getAntrean("INT").then((data) => {
-    //         chatNamespace.emit("INT", data);
-    //     }
-    //     );
-    //     getAntrean("U0002").then((data) => {
-    //         chatNamespace.emit("U0010", data);
-    //     }
-    //     );
-    //     getAntrean("U0044").then((data) => {
-    //         chatNamespace.emit("U0044", data);
-    //     }
-    //     );
-    // });
-    // setInterval(() => {
-    //     getAntrean("ANA").then((data) => {
-    //         chatNamespace.emit("ANA", data);
-    //     }
-    //     );
-    //     getAntrean("U0011").then((data) => {
-    //         chatNamespace.emit("U0011", data);
-    //     }
-    //     );
-    //     getAntrean("U0006").then((data) => {
-    //         chatNamespace.emit("U0006", data);
-    //     }
-    //     );
-    //     getAntrean("INT").then((data) => {
-    //         chatNamespace.emit("INT", data);
-    //     }
-    //     );
-    //     getAntrean("U0002").then((data) => {
-    //         chatNamespace.emit("U0002", data);
-    //     }
-    //     );
-    //     getAntrean("U0044").then((data) => {
-    //         chatNamespace.emit("U0044", data);
-    //     }
-    //     );
-    //     let dateNow = new Date();
-    //     console.log(`${dateNow.toLocaleString('id', { weekday: 'long' })}, ${dateNow.getDate()} ${dateNow.toLocaleString('en', { month: 'long' })} ${dateNow.getFullYear()}`);
-    //     chatNamespace.emit("tanggal", `${dateNow.toLocaleString('id', { weekday: 'long' })}, ${dateNow.getDate()} ${dateNow.toLocaleString('en', { month: 'long' })} ${dateNow.getFullYear()}`);
-    // }, 10000);
-};
 async function getAntrean(kd_poli) {
     let dateNow = new Date();
     let date = dateNow.getDate();
@@ -75,14 +16,27 @@ async function getAntrean(kd_poli) {
             'Authorization': process.env.TOKEN
         }
     };
+    let config2 = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${process.env.HOST}/api/ralan/antiran/rujukan?tgl_antrean=${tgl}&kd_poli=${kd_poli}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': process.env.TOKEN
+        }
+    };
 
     try {
         const response = await axios.request(config)
+        const response2 = await axios.request(config2)
+
     let antrians = [];
     let sudah = 0;
     let belum = 0;
     let batal = 0;
     let total = response.data.data.length;
+        // response.data.data = response.data.data.concat(response2.data.data);
+        console.log(response.data);
     for (let i of response.data.data) {
         if (i.stts == "Sudah") {
             sudah++;

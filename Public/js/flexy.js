@@ -157,6 +157,18 @@ function listing(x,data) {
             </div>
         `;
         }
+        if (i.status == 'Rujukan Internal Poli') {
+            newElement.innerHTML = `
+            <div class="bg-pink-200 p-4 rounded-lg text-xl font-bold w-16 text-center">${i.no_reg}</div>
+            <div class="ml-4">
+                <p>No Rawat: ${i.no_rawat}</p>
+                <p>Nama: ${i.nm_pasien}</p>
+                <p>Poli: ${data.data[0].poliklinik.nm_poli}</p>
+                <p>Dokter: ${i.nm_dokter}</p>
+                <p>Status: ${i.status}</p>
+            </div>
+        `;
+        }
         if (i.status == 'Batal') {
             newElement.innerHTML = `
             <div class="bg-red-200 p-4 rounded-lg text-xl font-bold w-16 text-center">${i.no_reg}</div>

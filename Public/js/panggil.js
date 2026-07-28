@@ -63,7 +63,8 @@ function renderPasienList() {
         const statusConfig = {
             'Belum': { bg: 'bg-yellow-50 border-l-4 border-yellow-400', badge: 'bg-yellow-500 text-white' },
             'Sudah': { bg: 'bg-green-50 border-l-4 border-green-400', badge: 'bg-green-500 text-white' },
-            'Batal': { bg: 'bg-red-50 border-l-4 border-red-400', badge: 'bg-red-500 text-white' }
+            'Batal': { bg: 'bg-red-50 border-l-4 border-red-400', badge: 'bg-red-500 text-white' },
+            'Rujukan Internal Poli': { bg: 'bg-pink-50 border-l-4 border-pink-400', badge: 'bg-pink-500 text-white' }
         };
 
         const config = statusConfig[pasien.stts] || { bg: 'bg-gray-50', badge: 'bg-gray-500 text-white' };
@@ -72,7 +73,7 @@ function renderPasienList() {
         // flex-col untuk mobile (stacking), sm:flex-row untuk desktop
         card.className = `p-4 rounded-lg shadow-sm ${config.bg} flex flex-col sm:flex-row justify-between sm:items-center gap-4 transition-all hover:shadow-md`;
 
-        const isBelum = pasien.stts === 'Belum';
+        const isBelum = pasien.stts === 'Belum' || pasien.stts === 'Rujukan Internal Poli';
 
         card.innerHTML = `
             <!-- Sisi Kiri / Atas: Info Pasien -->
