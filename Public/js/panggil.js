@@ -1,6 +1,5 @@
 // Ambil kd_poli dari URL atau EJS variable
 const kd_poli = document.querySelector('span#poli_name').textContent.trim();
-const socket = io();
 
 // Menyimpan data pasien yang dimuat
 let pasienList = [];
@@ -39,162 +38,125 @@ async function fetchPasienData() {
 // Fungsi untuk render list pasien
 function renderPasienList() {
     const container = document.getElementById('pasien_list');
-    
-    if (pasienList.length === 0) {
+
+    if (!pasienList || pasienList.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-8">Tidak ada pasien</p>';
         return;
     }
 
     container.innerHTML = '';
 
-    // Urutkan pasien - yang belum dipanggil di atas
-    const sorted = pasienList.sort((a, b) => {
+    // Clone array agar tidak memutasi state asli saat sorting
+    const sorted = [...pasienList].sort((a, b) => {
         if (a.stts === 'Belum' && b.stts !== 'Belum') return -1;
         if (a.stts !== 'Belum' && b.stts === 'Belum') return 1;
         return 0;
     });
 
-    sorted.forEach((pasien, index) => {
-        const statusColor = {
-            'Belum': 'bg-yellow-100 border-l-4 border-yellow-500',
-            'Sudah': 'bg-green-100 border-l-4 border-green-500',
-            'Batal': 'bg-red-100 border-l-4 border-red-500'
+    // Menggunakan DocumentFragment untuk batch DOM insertion (optimasi performa)
+    const fragment = document.createDocumentFragment();
+
+    // Helper untuk string escape yang lebih rapi di inline-handler
+    const escapeStr = (str) => (str || '').toString().replace(/'/g, "\\'");
+
+    sorted.forEach((pasien) => {
+        const statusConfig = {
+            'Belum': { bg: 'bg-yellow-50 border-l-4 border-yellow-400', badge: 'bg-yellow-500 text-white' },
+            'Sudah': { bg: 'bg-green-50 border-l-4 border-green-400', badge: 'bg-green-500 text-white' },
+            'Batal': { bg: 'bg-red-50 border-l-4 border-red-400', badge: 'bg-red-500 text-white' }
         };
 
+        const config = statusConfig[pasien.stts] || { bg: 'bg-gray-50', badge: 'bg-gray-500 text-white' };
+
         const card = document.createElement('div');
-        card.className = `pasien-card p-4 rounded-lg ${statusColor[pasien.stts] || 'bg-gray-100'} flex justify-between items-center`;
+        // flex-col untuk mobile (stacking), sm:flex-row untuk desktop
+        card.className = `p-4 rounded-lg shadow-sm ${config.bg} flex flex-col sm:flex-row justify-between sm:items-center gap-4 transition-all hover:shadow-md`;
+
+        const isBelum = pasien.stts === 'Belum';
+
         card.innerHTML = `
-            <div class="flex-1">
-                <div class="flex items-center gap-3">
-                    <div class="text-2xl font-bold text-gray-700 w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                        ${pasien.no_reg}
-                    </div>
-                    <div>
-                        <p class="font-semibold text-lg">${pasien.pasien.nm_pasien}</p>
-                        <p class="text-sm text-gray-600">Dokter: ${pasien.dokter.nm_dokter}</p>
-                        <p class="text-xs text-gray-500">No Rawat: ${pasien.no_rawat}</p>
-                    </div>
+            <!-- Sisi Kiri / Atas: Info Pasien -->
+            <div class="flex items-start sm:items-center gap-3 w-full sm:w-auto">
+                <div class="text-xl sm:text-2xl font-bold text-gray-700 min-w-[3rem] h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 shrink-0">
+                    ${pasien.no_reg}
+                </div>
+                <div class="flex-1 min-w-0"> <!-- min-w-0 penting untuk efek truncate pada teks panjang -->
+                    <p class="font-semibold text-base sm:text-lg text-gray-800 truncate" title="${pasien.pasien?.nm_pasien || '-'}">
+                        ${pasien.pasien?.nm_pasien || '-'}
+                    </p>
+                    <p class="text-xs sm:text-sm text-gray-600 truncate">Dr. ${pasien.dokter?.nm_dokter || '-'}</p>
+                    <p class="text-xs text-gray-500">No Rawat: ${pasien.no_rawat || '-'}</p>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <span class="px-3 py-1 rounded-full text-sm font-semibold ${
-                    pasien.stts === 'Belum' ? 'bg-yellow-500 text-white' :
-                    pasien.stts === 'Sudah' ? 'bg-green-500 text-white' :
-                    'bg-red-500 text-white'
-                }">
+
+            <!-- Sisi Kanan / Bawah: Status & Aksi -->
+            <div class="flex flex-row sm:flex-col md:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 mt-1 sm:mt-0 border-gray-200">
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${config.badge}">
                     ${pasien.stts}
                 </span>
-                ${pasien.stts === 'Belum' ? `
-                    <button onclick="callPasien('${pasien.no_reg}', '${pasien.pasien.nm_pasien.replace(/'/g, "\\'")}', '${pasien.dokter.nm_dokter.replace(/'/g, "\\'")}', '${pasien.poliklinik.nm_poli.replace(/'/g, "\\'")}')" 
-                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition">
+
+                ${isBelum ? `
+                    <button onclick="callPasien('${pasien.no_reg}', '${escapeStr(pasien.pasien?.nm_pasien)}', '${escapeStr(pasien.dokter?.nm_dokter)}', '${escapeStr(pasien.poliklinik?.nm_poli)}')" 
+                        class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition shadow-sm active:scale-95 flex-shrink-0">
                         PANGGIL
                     </button>
                 ` : ''}
             </div>
         `;
-        container.appendChild(card);
+        fragment.appendChild(card);
     });
+
+    container.appendChild(fragment);
 }
+
 
 // Fungsi untuk panggil pasien
-function callPasien(no_reg, nm_pasien, nm_dokter, nm_poli) {
-    // Emit ke server
-    socket.emit('panggil_pasien', {
-        kd_poli: kd_poli,
-        no_reg: no_reg,
-        nm_pasien: nm_pasien,
-        nm_dokter: nm_dokter,
-        nm_poli: nm_poli
-    });
-    document.querySelector("button").disabled = true;
+async function callPasien(no_reg, nm_pasien, nm_dokter, nm_poli) {
+    updateDisplayPanggilan(no_reg, nm_pasien, nm_dokter);
     console.log(`Memanggil pasien: ${nm_pasien}`);
+    document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+    const response = await fetch(`/api/antiran/poli/${kd_poli}/${nm_poli}/${nm_pasien}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    setTimeout(() => {
+        console.log("Jalan setelah 5 detik!");
+        fetchPasienData();
+    }, 5000);
+
+
+}
+function updateDisplayPanggilan(no_reg, nm_pasien, nm_dokter) {
+    // Update teks pada elemen UI (dengan fallback jika data kosong)
+    document.getElementById('display_no_reg').textContent = no_reg || '--';
+    document.getElementById('display_nm_pasien').textContent = nm_pasien || '-';
+    document.getElementById('display_nm_dokter').textContent = nm_dokter ? `Dr. ${nm_dokter}` : '-';
+
+    // Update waktu panggilan terakhir dengan format waktu lokal (WIB)
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('last_call_time').textContent = `Terakhir dipanggil: ${timeString}`;
+
+    // Opsional: Tambahkan efek animasi berkedip (pulse) sebentar pada panel untuk menarik perhatian
+    const displayPanel = document.getElementById('display_no_reg').parentElement;
+    displayPanel.classList.add('animate-pulse', 'bg-opacity-25');
+    setTimeout(() => {
+        displayPanel.classList.remove('animate-pulse', 'bg-opacity-25');
+    }, 1500);
 }
 
-// Socket.IO Connection
-socket.on('connect', () => {
-    console.log('Connected to server:', socket.id);
-    socket.emit('subscribe_poli', kd_poli);
-    console.log(`Subscribed to poli: ${kd_poli}`);
-});
-
-// Listen untuk panggil update dari server
-socket.on('panggil_update', (data) => {
-    if (data.kd_poli !== kd_poli) return;
-    console.log('Panggil update received:', data);
-    
-    // Update display panel
-    document.getElementById('display_no_reg').textContent = data.no_reg;
-    document.getElementById('display_nm_pasien').textContent = data.nm_pasien;
-    document.getElementById('display_nm_dokter').textContent = data.nm_dokter;
-    
-    // Update waktu panggilan
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('id-ID');
-    document.getElementById('last_call_time').textContent = `Dipanggil: ${timeString}`;
-    
-    // Play sound notification (optional)
-    playNotification();
-
-    // Highlight the called patient
-    highlightCalled(data.no_reg);
-});
 
 // Highlight pasien yang dipanggil
-function highlightCalled(no_reg) {
-    const cards = document.querySelectorAll('.pasien-card');
-    cards.forEach(card => {
-        card.classList.remove('called');
-    });
-    
-    // Find dan highlight yang dipanggil
-    setTimeout(() => {
-        const allCards = document.querySelectorAll('.pasien-card');
-        allCards.forEach(card => {
-            if (card.textContent.includes(no_reg)) {
-                card.classList.add('called');
-                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        });
-    }, 100);
-}
 
 // Play notification sound
-function playNotification() {
-    // Membuat simple beep sound menggunakan Web Audio API
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 800;
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5);
-    } catch (e) {
-        console.log('Audio notification failed:', e.message);
-    }
-}
 
 // Listen untuk antrian update (refresh pasien list)
-socket.on('antrian_update', (data) => {
-    if (data.kd_poli === kd_poli) {
-        console.log('Antrian update received for this poli');
-        // Update pasien list
-        pasienList = data.data;
-        renderPasienList();
-    }
-});
-
-socket.on('disconnect', () => {
-    console.log('Disconnected from server');
-});
 
 // Initial load
 document.addEventListener('DOMContentLoaded', () => {
@@ -202,7 +164,5 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchPasienData();
     
     // Refresh data setiap 10 detik
-    setInterval(() => {
-        fetchPasienData();
-    }, 10000);
+
 });
