@@ -38,6 +38,7 @@ app.use("/asset/js/", express.static(path.join(__dirname + '/Public/js/')));
 app.use("/asset/img/", express.static(path.join(__dirname + '/Public/img/')));
 app.use("/asset/css/", express.static(path.join(__dirname + '/Public/css/')));
 app.use("/asset/video/", express.static(path.join(__dirname + '/Public/video/')));
+app.use("/asset/audio/", express.static(path.join(__dirname + '/Public/audio/')));
 const routes = require('./routes');
 app.use('/', routes);
 

@@ -50,11 +50,11 @@ function playAudiosSequentially(audioPaths) {
 }
 function audiotest() {
     try {
-        const audio = new Audio('/api/voice/ON.wav');
+        const audio = new Audio('/asset/audio/piuw.mp3');
         audio.play();
     } catch (error) {
         console.log(error);
-    }
+    } 
 
 }
 
