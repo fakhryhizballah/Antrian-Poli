@@ -215,10 +215,6 @@ eventSource.onmessage = async (event) => {
     }
 };
 
-// 4. Listener jika terjadi error atau koneksi terputus
-
-
-// Opsional: Tutup koneksi dengan rapi jika user menutup tab/window
 window.addEventListener('beforeunload', () => {
     eventSource.close();
 });
