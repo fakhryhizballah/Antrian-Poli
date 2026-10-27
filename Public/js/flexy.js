@@ -25,7 +25,8 @@ async function getAntrean(kd_poli, tgl) {
 
 const urlParams = new URLSearchParams(window.location.search);
 const kdpoli = urlParams.get('kdpoli') || '';
-const poli = kdpoli.split(',').map(kd => kd.trim()).filter(Boolean).slice(0, 2);
+// const poli = kdpoli.split(',').map(kd => kd.trim()).filter(Boolean).slice(0, 2);
+const poli = kdpoli.split(',');
 console.log(poli);
 
 // Mapping kd_poli ke index display (1, 2).
@@ -216,24 +217,12 @@ async function main() {
 
     // Initial load untuk maksimal dua display. Indeks mengikuti urutan kd_poli
     // pada query string supaya poli kedua tidak bergeser ketika poli pertama kosong.
-    // for (let idx = 0; idx < poli.length && idx < 2; idx++) {
-    //     const data = await getAntrean(poli[idx], tgl);
-    //     if (data == null) {
-    //         continue;
-    //     }
-    //     listing(idx + 1, data);
-    // }
-    let x = 1;
-    for (let i of poli) {
-        if (x > 3) {
-            return;
-        }
-        let data = await getAntrean(i, tgl);
+    for (let idx = 0; idx < poli.length && idx < 2; idx++) {
+        const data = await getAntrean(poli[idx], tgl);
         if (data == null) {
             continue;
         }
-        listing(x, data);
-        x++;
+        listing(idx + 1, data);
     }
 }
 
