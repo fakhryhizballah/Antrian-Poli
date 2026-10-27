@@ -216,12 +216,24 @@ async function main() {
 
     // Initial load untuk maksimal dua display. Indeks mengikuti urutan kd_poli
     // pada query string supaya poli kedua tidak bergeser ketika poli pertama kosong.
-    for (let idx = 0; idx < poli.length && idx < 2; idx++) {
-        const data = await getAntrean(poli[idx], tgl);
+    // for (let idx = 0; idx < poli.length && idx < 2; idx++) {
+    //     const data = await getAntrean(poli[idx], tgl);
+    //     if (data == null) {
+    //         continue;
+    //     }
+    //     listing(idx + 1, data);
+    // }
+    let x = 1;
+    for (let i of poli) {
+        if (x > 3) {
+            return;
+        }
+        let data = await getAntrean(i, tgl);
         if (data == null) {
             continue;
         }
-        listing(idx + 1, data);
+        listing(x, data);
+        x++;
     }
 }
 
