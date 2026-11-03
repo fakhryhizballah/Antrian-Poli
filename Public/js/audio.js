@@ -50,7 +50,7 @@ function playAudiosSequentially(audioPaths) {
 }
 function audiotest() {
     try {
-        const audio = new Audio('/asset/audio/piuw.mp3');
+        const audio = new Audio('/asset/audio/iphone-charge-sound.mp3');
         audio.play();
     } catch (error) {
         console.log(error);
